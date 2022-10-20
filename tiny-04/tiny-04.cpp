@@ -57,10 +57,25 @@ bool BST::contains(double value) const {
     return false;
 }
 
-BST::BST(BST const& rhs) = default;
-BST& BST::operator=(BST const& rhs) = default;
-BST::BST(BST&& rhs) = default;
-BST& BST::operator=(BST&& rhs) = default;
+BST::BST(BST const& rhs){
+    this->~BST();
+    for (const auto & blob: rhs.preorder_elements()){
+        this->add(blob);
+    }
+}
+ 
+BST& BST::operator=(BST const& rhs){
+    BST temp(rhs);
+    std::swap(this->m_root, temp.m_root);
+    return *this;
+}
+BST::BST(BST&& rhs){
+    std::swap(this->m_root,rhs.m_root);
+}
+BST& BST::operator=(BST&& rhs){
+    std::swap(this->m_root,rhs.m_root);
+    return *this; 
+}
 
 BST::~BST() {
     if (m_root) {
