@@ -42,4 +42,8 @@ private:
     double m_imag;
 };
 
+complex operator + (double blob, const complex & rhs);
+complex operator - (double blob, const complex & rhs);
+complex operator * (double blob, const complex & rhs);
+
 } // end namespace pjc

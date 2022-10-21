@@ -43,4 +43,14 @@ complex complex::operator* (const complex & rhs){
     double imag_temp = this->real()*rhs.imag()+this->imag()*rhs.real();
     return complex(real_temp, imag_temp);
 }
+
+complex operator + (double blob, const complex & rhs){
+    return complex(rhs.real() + blob, rhs.imag());
+}
+complex operator - (double blob, const complex & rhs){
+    return complex(-rhs.real() + blob, -rhs.imag());
+}
+complex operator * (double blob, const complex & rhs){
+        return complex(rhs.real() * blob, rhs.imag() * blob);
+}
 }
