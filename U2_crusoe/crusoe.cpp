@@ -122,22 +122,83 @@ size_t graph::num_edge() const {
 // ------------------- stage 2 -------------------
 
 vertex graph::get_vertex(size_t num) const{
+    return this->vertices[num];
 }
 
 void graph::is_achievable(size_t from, std::vector<size_t>& achieved){
+    std::vector<bool> visited;
+    visited.assign(this->size(), false);
 
+    std::queue<size_t> q;
+    q.push(from);
+    while (!q.empty()){
+        size_t current = q.front();
+        q.pop();
+        if (visited[current] == true){
+            continue;
+        }
+        visited[current] = true;
+        for (const auto & node : this->get_vertex(current).get_neighbour() ){
+            if (visited[node.first] == false){
+                q.push(node.first);
+            }
+        }
+        achieved.push_back(current);
+    }
 }
 
 void graph::color_component(std::vector<size_t> cmp, const std::string& col){
-
+    size_t i;
+    for (i = 0; i < cmp.size(); i++){
+        this->set_vertex_color(cmp[i], col);
+        for ( const auto & blob : this->get_vertex(cmp[i]).get_neighbour()) {
+            this->set_edge_color(cmp[i], blob.first, col);
+        }
+    }
 }
 
 std::vector<size_t> graph::path(size_t v1, size_t v2){
+    std::vector<size_t> cost;
+    cost.assign(this->size(), this->size());
+    std::vector<size_t> parent;
+    parent.assign(this->size(), this->size());
+    cost[v1] = 0;
+    parent[v1] = v1;
 
+    std::queue<size_t> q;
+    q.push(v1);
+    while (!q.empty()){
+        size_t current = q.front();
+        q.pop();
+        for (const auto & node : this->get_vertex(current).get_neighbour() ){
+            if ( cost[node.first] > cost[current]+1 ){
+                cost[node.first] = cost[current]+1;
+                parent[node.first] = current;
+                if (node.first == v2){
+                    break; // dont need to look further, since thanks to the queue functionality, and that every edge cost is 1. I can be certain, that there wont be better path
+                }
+                q.push(node.first);
+            }
+        }
+    }
+    size_t current = v2;
+    std::vector<size_t> ret;
+    if ( (parent[v2] == this->size()) ) {
+        return ret;
+    }
+    while (current != v1){
+        ret.push_back(current);
+        current = parent[current];
+    } 
+    ret.push_back(current);
+    std::reverse(ret.begin(), ret.end());
+    return ret;
 }
 
 void graph::color_path(std::vector<size_t> pth, const std::string& col){
-    
+    for (size_t i = 0; i < pth.size()-1; i++){
+        this->set_edge_color(pth[i], pth[i+1], col);    
+    }
 }
 
 graph::graph_comp::graph_comp(graph& gg) :
