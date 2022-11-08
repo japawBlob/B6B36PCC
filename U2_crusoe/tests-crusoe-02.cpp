@@ -486,7 +486,7 @@ TEST_CASE("Graph path - random", "[stage2][path]") {
                 REQUIRE(colored_and_save(g, pth, "red", false));
             }
             pth.clear();
-            pth = g.path(dist(rng), 2 * dist(rng));
+            pth = g.path(dist(rng), 2 * dist(rng)); // HERE IS THE BUG
             REQUIRE(is_path(g, pth));
             if (pth.size() > max_path && my_size <= 20) {
                 max_path = pth.size();
